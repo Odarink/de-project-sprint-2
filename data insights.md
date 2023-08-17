@@ -43,3 +43,19 @@ agreement_commission NUMERIC(14,3) --> NUMERIC(14,2)
 Полученный уникальных набор данных из 3 столбцов.
 <p>
 4. shipping_info - справочник комиссий по странам, с уникальными доставками.
+  shipping_id BIGINT - уникальный идентификатор доставки из источника в соответствии с типом данных,
+  vendor_id BIGINT - уникальный идентификатор вендора в соответствии с типом данных источника,
+  payment_amount NUMERIC(14,2) - сумма платежа, тип данных в соответствии с источником,
+  shipping_plan_datetime timestamp - плановая дата доставки из источника,
+  shipping_transfer_id BIGINT - идентификатор из shipping_transfer по типу доставки,
+  shipping_agreement_id BIGINT - идентификатор из shipping_agreement по тарифу доставки,
+  shipping_country_rate_id BIGINT - идентификатор из shipping_country_rates по стоимости доставки в страны,
+  PRIMARY KEY  по shipping_id
+Практическая часть заключается в:
+Удаление таблицы если она существует.
+Создание с заданными типами и ограничениями заложенным в задании (PK по shipping_id, FK по shipping_transfer_id, 
+shipping_agreement_id, shipping_country_rate_id)
+JOIN идентификаторов идет из источника по следующим столбцам (shipping_transfer - shipping.shipping_transfer_description,
+shipping_country_rates - s.shipping_country)
+shipping_agreement_id заложен в источнике подстрокой в vendor_agreement_description.
+5.
