@@ -75,5 +75,27 @@ shipping_agreement_id заложен в источнике подстрокой 
 Заполнение таблица public.shipping_status где к таблице (1) JOIN (2), JOIN (3) 
 с условием того что берется строка с максимальной датой статуса.
 <p>
-6.
+6. shipping_datamart - таблица для аналитики по заказам
+  shipping_id BIGINT - уникальный идентификатор доставки из источника в соответствии с типом данных,
+  vendor_id BIGINT - уникальный идентификатор вендора в соответствии с типом данных источника,
+  transfer_type text - тип доставки,
+  full_day_at_shipping  integer - количество полных дней, в течение которых длилась доставка,
+  is_delay boolean - статус, показывающий просрочена ли доставка,
+  is_shipping_finish boolean -  статус, показывающий, что доставка завершена,
+  delay_day_at_shipping  integer - количество дней, на которые была просрочена доставка,
+  payment_amount  NUMERIC(14,2) - сумма платежа пользователя,
+  vat NUMERIC(14,2) - итоговый налог на доставку,
+  profit NUMERIC(14,2) -  итоговый доход компании с доставки,
+  PRIMARY KEY (shipping_id)
+Практическая часть заключается в:
+Select производится из таблицы shipping_status к которой необходимо присоединить shippinf_info заменив все столбцы
+индексов на физические значения. Поэтому сначала идет под запрос join-ов к shipping_info и полученный подзапрос уже
+соединяется с shipping_status. Все расчетные формулы: 
+  is_delay := shipping_end_fact_datetime > shipping_plan_datetime then 1 else 0.
+  is_shipping_finish  := status = finished then 1 else 0.
+  delay_day_at_shipping  := when shipping_end_fact_datetime > shipping_plan_datetime then (
+    shipping_end_fact_datetime − shipping_plan_datetime) else 0.
+  vat := payment_amount * (shipping_country_base_rate + agreement_rate + shipping_transfer_rate).
+  profit := payment_amount * agreement_commission.
+
 
